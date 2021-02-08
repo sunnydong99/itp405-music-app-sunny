@@ -14,6 +14,7 @@
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('invoice.index')}}">Invoices</a>
+                        <a class="nav-link" href="{{route('playlist.index')}}">Playlists</a>
                     </li>
                 </ul>
             </div>

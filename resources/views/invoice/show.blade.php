@@ -2,11 +2,12 @@
 
 {{-- code from github with blade --}}
 
+
 @section('title')
     Invoice #{{$invoice->id}}
+@endsection
 
 @section('content')
-    {{-- <p>Invoice Total: {{$invoice->total}}</p> --}}
     <a href="{{route('invoice.index')}}" class="d-block mb-3">Back to Invoices</a>
     <p>Invoice Total: ${{$invoice->total}}</p>
     <table class="table table-striped">

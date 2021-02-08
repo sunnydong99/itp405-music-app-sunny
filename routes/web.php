@@ -3,6 +3,7 @@
 // use Illuminate\Support\Facades\DB; // query builder
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PlaylistController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,8 @@ Route::get('/', function () {
 Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoice.index');
 Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->name('invoice.show');
 
+Route::get('/playlists', [PlaylistController::class, 'index'])->name('playlist.index');
+Route::get('/playlists/{id}', [PlaylistController::class, 'show'])->name('playlist.show');
 // Route::get('/invoices', function() {
 //     $invoices = DB::table('invoices')->get(); // = SELECT * FROM invoices, getting the data
 //     return view('invoices', [
