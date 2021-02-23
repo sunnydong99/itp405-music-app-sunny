@@ -66,11 +66,11 @@ class PlaylistController extends Controller
             ->first();
 
         DB::table('playlists')->where('id', '=', $id)->update([
-            'name' => $request->input('name'),
+            'name' => $request->input('playlist'),
         ]);
 
         return redirect()
-            ->route('playlist.index') 
-            ->with('success', "{$old_playlist->name} was successfully updated to {$request->input('name')}");
+            ->route('playlist.index') // need id?
+            ->with('success', "{$old_playlist->name} was successfully updated to {$request->input('playlist')}");
     }
 }

@@ -8,15 +8,15 @@
     <form action="{{ route('playlist.update', [ 'id' => $playlist->id ]) }}" method="POST">
         @csrf
         <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
+            <label for="playlist" class="form-label">Name</label>
             <input 
                 type="text" 
-                name="name" 
-                id="name" 
+                name="playlist" 
+                id="playlist" 
                 class="form-control" 
-                value="{{ old('name', $playlist->name) }}" {{-- if 'name' from input doesn't exist default to original name --}}
+                value="{{ old('playlist', $playlist->name) }}" {{-- if 'playlist' from input doesn't exist default to original name --}}
             > 
-            @error('name') 
+            @error('playlist') 
                 <small class="text-danger"> {{ $message }} </small>
             @enderror
         </div>
