@@ -16,6 +16,7 @@
                         <a class="nav-link" href="{{ route('invoice.index') }}">Invoices</a>
                         <a class="nav-link" href="{{ route('playlist.index') }}">Playlists</a>
                         <a class="nav-link" href="{{ route('album.index') }}">Albums</a>
+                        <a class="nav-link" href="{{ route('new-album.index') }}">Albums (Eloquent)</a>
                         <a class="nav-link" href="{{ route('track.index') }}">Tracks</a>
                     </li>
                 </ul>

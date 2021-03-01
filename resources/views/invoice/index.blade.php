@@ -24,8 +24,9 @@
                     <td>
                         {{$invoice->invoice_date}}
                     </td>
-                    <td>
-                        {{$invoice->first_name}} {{$invoice->last_name}}
+                    <td> 
+                        {{-- updated with eloquent: need to point to song --}}
+                        {{$invoice->customer->full_name}}
                     </td>
                     <td>
                         ${{$invoice->total}}
