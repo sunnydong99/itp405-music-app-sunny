@@ -13,6 +13,11 @@ use App\Models\Artist;
 use App\Models\Track;
 use App\Models\Album;
 use App\Models\Genre;
+// Lecture week 7
+use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AuthController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -126,6 +131,21 @@ Route::get('/new-albums/create', [NewAlbumController::class, 'create'])->name('n
 Route::post('/new-albums',[NewAlbumController::class, 'store'])->name('new-album.store');
 Route::get('/new-albums/{id}/edit',[NewAlbumController::class, 'edit'])->name('new-album.edit');
 Route::post('/new-albums/{id}', [NewAlbumController::class, 'update'])->name('new-album.update');
+
+
+// Lecture week 7 routes (Migrations)
+Route::get('/register', [RegistrationController::class, 'index'])->name('registration.index');
+Route::post('/register', [RegistrationController::class, 'register'])->name('registration.create');
+Route::get('/login', [AuthController::class, 'loginForm'])->name('auth.loginForm'); // shown the log in form
+Route::post('/login', [AuthController::class, 'login'])->name('auth.login'); // process the actual log in 
+
+// Attaching custom-auth middleware to routes we want
+Route::middleware(['custom-auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+});
+// middleware = classes with a handle method that run before a set of routes
+
 
 if (env('APP_ENV') !== 'local') {
     URL::forceScheme('https');

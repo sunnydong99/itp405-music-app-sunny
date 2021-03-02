@@ -21,14 +21,12 @@
                 <tr>
                    <td>
                        {{ $album->title }}
-                       {{ $album->id }}
                    </td>
                    <td>
-                        {{ $album->artist->name }} 
-                        {{ $album->artist->id }}
+                        {{ $album->artist->name }}
                     </td>
                     <td>
-                        <a href="{{ route('new-album.edit', ['id' => $album->id]) }}">
+                        <a href="{{ route('new-album.edit', ['id' => $album->album_id]) }}">
                             Edit 
                         </a>
                     </td>

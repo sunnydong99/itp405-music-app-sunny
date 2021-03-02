@@ -12,8 +12,11 @@ class NewAlbumController extends Controller
     { 
         $albums = Album::with(['artist'])
             ->join('artists', 'artists.id', '=', 'albums.artist_id')
+            ->select('*','albums.id as album_id')
             ->orderBy('artists.name')
+            ->orderBy('albums.title')
             ->get();
+
         return view('new-album.index', [
             'albums' => $albums,
         ]);
@@ -27,10 +30,10 @@ class NewAlbumController extends Controller
         ]);
     }
 
-    public function store(Request $request) // laravel injects request method with all the data from request (what we typed in form)
+    public function store(Request $request) 
     {
         $request->validate([
-            'title' => 'required|max:50', // title is the name
+            'title' => 'required|max:50',
             'artist' => 'required|exists:artists,id',
         ]);
 
@@ -38,8 +41,6 @@ class NewAlbumController extends Controller
         $album->title = $request->input('title');
         $album->artist_id = $request->input('artist');
         $album->save(); // this does the insert
-
-        // $artist = Artist::find($request->input('artist'));
 
         return redirect()
             ->route('new-album.index')
