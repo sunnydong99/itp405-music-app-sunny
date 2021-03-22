@@ -17,6 +17,8 @@ use App\Models\Genre;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
+// Assignment 6
+use App\Http\Controllers\AdminController;
 
 
 /*
@@ -99,53 +101,84 @@ Route::get('/', function () {
 // A program would be unmaintainable if you listed all routes here in one file
 
 // NEW
-Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoice.index');
-Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->name('invoice.show');
+// Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoice.index');
+// Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->name('invoice.show');
 
-Route::get('/playlists', [PlaylistController::class, 'index'])->name('playlist.index');
-Route::get('/playlists/{id}', [PlaylistController::class, 'show'])->name('playlist.show');
+// Maintenance mode middleware
+Route::view('/maintenance', 'maintenance')->name('maintenance');
+Route::middleware(['maintenance'])->group(function () {
+    // should check for all unauthenticated routes except login (GET/POST), logout
+    
+    Route::get('/playlists', [PlaylistController::class, 'index'])->name('playlist.index');
+    Route::get('/playlists/{id}', [PlaylistController::class, 'show'])->name('playlist.show');
+    // Lecture 4 CRUD, validation, flash messages
+    Route::get('/albums', [AlbumController::class, 'index'])->name('album.index');
+    // these were all get requests
+    // 2 requests: page to show form, and submission (GET then POST)
+    Route::get('/albums/create', [AlbumController::class, 'create'])->name('album.create');
+    // it's ok to use the same url twice for 2 different requests
+    Route::post('/albums',[AlbumController::class, 'store'])->name('album.store');
+    // edit
+    Route::get('/albums/{id}/edit',[AlbumController::class, 'edit'])->name('album.edit');
+    Route::post('/albums/{id}', [AlbumController::class, 'update'])->name('album.update');
 
-// Lecture 4 CRUD, validation, flash messages
-Route::get('/albums', [AlbumController::class, 'index'])->name('album.index');
-// these were all get requests
-// 2 requests: page to show form, and submission (GET then POST)
-Route::get('/albums/create', [AlbumController::class, 'create'])->name('album.create');
-// it's ok to use the same url twice for 2 different requests
-Route::post('/albums',[AlbumController::class, 'store'])->name('album.store');
-// edit
-Route::get('/albums/{id}/edit',[AlbumController::class, 'edit'])->name('album.edit');
-Route::post('/albums/{id}', [AlbumController::class, 'update'])->name('album.update');
+    // Assignment 3 tracks routes
+    Route::get('/tracks',[TrackController::class, 'index'])->name('track.index');
+    Route::get('/tracks/new', [TrackController::class, 'create'])->name('track.create');
+    Route::post('/tracks', [TrackController::class,'store'])->name('track.store');
 
-// Assignment 3 tracks routes
-Route::get('/tracks',[TrackController::class, 'index'])->name('track.index');
-Route::get('/tracks/new', [TrackController::class, 'create'])->name('track.create');
-Route::post('/tracks', [TrackController::class,'store'])->name('track.store');
-
-Route::get('/playlists/{id}/edit', [PlaylistController::class, 'edit'])->name('playlist.edit');
-Route::post('/playlists/{id}', [PlaylistController::class, 'update'])->name('playlist.update');
+    Route::get('/playlists/{id}/edit', [PlaylistController::class, 'edit'])->name('playlist.edit');
+    Route::post('/playlists/{id}', [PlaylistController::class, 'update'])->name('playlist.update');
 
 
-// Assignment 5 eloquent album routes (CRUD)
-Route::get('/new-albums', [NewAlbumController::class, 'index'])->name('new-album.index');
-Route::get('/new-albums/create', [NewAlbumController::class, 'create'])->name('new-album.create');
-Route::post('/new-albums',[NewAlbumController::class, 'store'])->name('new-album.store');
-Route::get('/new-albums/{id}/edit',[NewAlbumController::class, 'edit'])->name('new-album.edit');
-Route::post('/new-albums/{id}', [NewAlbumController::class, 'update'])->name('new-album.update');
+    // Assignment 5 eloquent album routes (CRUD)
+    Route::get('/new-albums', [NewAlbumController::class, 'index'])->name('new-album.index');
+    Route::get('/new-albums/create', [NewAlbumController::class, 'create'])->name('new-album.create');
+    Route::post('/new-albums',[NewAlbumController::class, 'store'])->name('new-album.store');
+    Route::get('/new-albums/{id}/edit',[NewAlbumController::class, 'edit'])->name('new-album.edit');
+    Route::post('/new-albums/{id}', [NewAlbumController::class, 'update'])->name('new-album.update');
+
+
+    // Lecture week 7 routes (Migrations)
+    Route::get('/register', [RegistrationController::class, 'index'])->name('registration.index');
+    Route::post('/register', [RegistrationController::class, 'register'])->name('registration.create');
+    
+});
+
 
 
 // Lecture week 7 routes (Migrations)
-Route::get('/register', [RegistrationController::class, 'index'])->name('registration.index');
-Route::post('/register', [RegistrationController::class, 'register'])->name('registration.create');
 Route::get('/login', [AuthController::class, 'loginForm'])->name('auth.loginForm'); // shown the log in form
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login'); // process the actual log in 
 
+
 // Attaching custom-auth middleware to routes we want
 Route::middleware(['custom-auth'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::middleware(['not-blocked'])->group(function () {
+        // can only access these pages if you're not blocked
+        Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+        Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoice.index');
+        Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->name('invoice.show');
+    });
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+    Route::view('/blocked', 'blocked')->name('blocked');
+
+    // Admin middleware
+Route::middleware(['admin-priv'])->group(function() {
+    // Route::view('/admin', 'admin')->name('admin');
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    Route::post('/admin', [AdminController::class, 'update'])->name('admin.update');
+});
 });
 // middleware = classes with a handle method that run before a set of routes
 
+
+// // Admin middleware
+// Route::middleware(['admin-priv'])->group(function() {
+//     // Route::view('/admin', 'admin')->name('admin');
+//     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+//     Route::post('/admin', [AdminController::class, 'update'])->name('admin.update');
+// });
 
 if (env('APP_ENV') !== 'local') {
     URL::forceScheme('https');
