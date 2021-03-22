@@ -163,17 +163,16 @@ Route::middleware(['custom-auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
     Route::view('/blocked', 'blocked')->name('blocked');
 
-    // Admin middleware
-Route::middleware(['admin-priv'])->group(function() {
-    // Route::view('/admin', 'admin')->name('admin');
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-    Route::post('/admin', [AdminController::class, 'update'])->name('admin.update');
-});
+    // Admin middleware nested in auth middleware
+    Route::middleware(['admin-priv'])->group(function() {
+        Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+        Route::post('/admin', [AdminController::class, 'update'])->name('admin.update');
+    });
 });
 // middleware = classes with a handle method that run before a set of routes
 
 
-// // Admin middleware
+// // Admin middleware - not nested in custom-auth
 // Route::middleware(['admin-priv'])->group(function() {
 //     // Route::view('/admin', 'admin')->name('admin');
 //     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');

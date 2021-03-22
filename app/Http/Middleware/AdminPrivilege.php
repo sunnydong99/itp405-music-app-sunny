@@ -17,7 +17,14 @@ class AdminPrivilege
      */
     public function handle(Request $request, Closure $next)
     {
-        if ((Auth::check()) && (Auth::user()->role->slug === 'admin')) {
+        // Not nested in custom-auth
+        // if ((Auth::check()) && (Auth::user()->role->slug === 'admin')) {
+        //     return $next($request);
+        // }
+        // else {
+        //     abort(404); 
+        // }
+        if ((Auth::user()->role->slug === 'admin')) {
             return $next($request);
         }
         else {
