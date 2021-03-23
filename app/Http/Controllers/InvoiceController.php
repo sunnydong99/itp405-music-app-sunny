@@ -5,15 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Invoice;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class InvoiceController extends Controller
 {
     public function index()
     {   
+        $this->authorize('viewAny', Invoice::class);
         // 02/22: rewrite index() eloquent
         // $invoices = Invoice::all(); // Suffers from the N+1 problem
-        $invoices = Invoice::with(['customer'])->get(); // eager loading
-
+        $invoices = Invoice::select('invoices.*')
+            ->with(['customer']) // eager loading
+            ->join('customers', 'invoices.customer_id', '=', 'customers.id')
+            ->when(!Auth::user()->isAdmin(), function($query) { // conditionally adding a where clause to the query
+                return $query->where('customers.email', '=', Auth::user()->email);
+            })
+            ->get();
 
         // $invoices = DB::table('invoices')
         //     ->join('customers','invoices.customer_id', '=', 'customers.id')
@@ -57,6 +65,26 @@ class InvoiceController extends Controller
             'invoiceItems.track.album',
             'invoiceItems.track.album.artist',
         ])->find($id);
+
+        // Lecture 10
+        // boolean - if they're equal, gate::denies will be false = no abort
+        // if (Gate::denies('view-invoice', $invoice)){
+        //     abort(403);
+        // }
+        // OR:
+        // if (!Gate::allows(......))
+
+        // OR: or !can
+        // if (Auth::user()->cannot('view-invoice', $invoice)){
+        //     abort(403);
+        // }
+
+        // OR: authorize class exists in controllers,
+        // Gates are like callback functions like routes, policies group related authorizations like Controllers which group related routes
+        // $this->authorize('view-invoice', $invoice);
+
+        $this->authorize('view', $invoice);
+
 
         return view('invoice.show', [
             'invoice' => $invoice,

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Role;
+use App\Models\Customer;
+
 
 class User extends Authenticatable
 {
@@ -45,5 +47,13 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+    public function isCustomer()
+    {
+        return (Customer::where('email', '=', $this->email)->count() > 0);
+    }
+    public function isAdmin()
+    {
+        return ($this->role->slug === 'admin');
     }
 }

@@ -24,7 +24,13 @@ class AdminPrivilege
         // else {
         //     abort(404); 
         // }
-        if ((Auth::user()->role->slug === 'admin')) {
+        // if ((Auth::user()->role->slug === 'admin')) {
+        //     return $next($request);
+        // }
+        // else {
+        //     abort(404); 
+        // }
+        if ( Auth::user()->isAdmin() ) {
             return $next($request);
         }
         else {
