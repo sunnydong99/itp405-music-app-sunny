@@ -5,14 +5,17 @@
 @section('title', 'Albums')
 
 @section('content')
-    <div class='text-end mb-3'>
-        <a href="{{ route('new-album.create') }}">New Album</a>
-    </div>
+    @if (Auth::check())
+        <div class='text-end mb-3'>
+            <a href="{{ route('new-album.create') }}">New Album</a>
+        </div>
+    @endif
     <table class='table table-striped'>
         <thead>
             <tr>
                 <th>Album</th>
                 <th>Artist</th>
+                <th>Created By</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -26,9 +29,14 @@
                         {{ $album->artist->name }}
                     </td>
                     <td>
-                        <a href="{{ route('new-album.edit', ['id' => $album->album_id]) }}">
-                            Edit 
-                        </a>
+                        {{ $album->user->name }}
+                    </td>
+                    <td>
+                        @can('update', $album)
+                            <a href="{{ route('new-album.edit', ['id' => $album->album_id]) }}">
+                                Edit 
+                            </a>
+                        @endcan
                     </td>
                 </tr>
             @endforeach

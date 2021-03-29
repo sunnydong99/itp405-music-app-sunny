@@ -56,4 +56,9 @@ class User extends Authenticatable
     {
         return ($this->role->slug === 'admin');
     }
+    // Assignment 7
+    public function albums()
+    {
+        return $this->hasMany(Album::class);
+    }
 }

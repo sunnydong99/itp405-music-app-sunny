@@ -133,10 +133,10 @@ Route::middleware(['maintenance'])->group(function () {
 
     // Assignment 5 eloquent album routes (CRUD)
     Route::get('/new-albums', [NewAlbumController::class, 'index'])->name('new-album.index');
-    Route::get('/new-albums/create', [NewAlbumController::class, 'create'])->name('new-album.create');
-    Route::post('/new-albums',[NewAlbumController::class, 'store'])->name('new-album.store');
-    Route::get('/new-albums/{id}/edit',[NewAlbumController::class, 'edit'])->name('new-album.edit');
-    Route::post('/new-albums/{id}', [NewAlbumController::class, 'update'])->name('new-album.update');
+    // Route::get('/new-albums/create', [NewAlbumController::class, 'create'])->name('new-album.create');
+    // Route::post('/new-albums',[NewAlbumController::class, 'store'])->name('new-album.store');
+    // Route::get('/new-albums/{id}/edit',[NewAlbumController::class, 'edit'])->name('new-album.edit');
+    // Route::post('/new-albums/{id}', [NewAlbumController::class, 'update'])->name('new-album.update');
 
 
     // Lecture week 7 routes (Migrations)
@@ -154,6 +154,14 @@ Route::post('/login', [AuthController::class, 'login'])->name('auth.login'); // 
 
 // Attaching custom-auth middleware to routes we want
 Route::middleware(['custom-auth'])->group(function () {
+
+    // Assignment 7 - custom-auth check for album create/edit routes
+    Route::get('/new-albums/create', [NewAlbumController::class, 'create'])->name('new-album.create');
+    Route::post('/new-albums',[NewAlbumController::class, 'store'])->name('new-album.store');
+    Route::get('/new-albums/{id}/edit',[NewAlbumController::class, 'edit'])->name('new-album.edit');
+    Route::post('/new-albums/{id}', [NewAlbumController::class, 'update'])->name('new-album.update');
+
+
     Route::middleware(['not-blocked'])->group(function () {
         // can only access these pages if you're not blocked
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');

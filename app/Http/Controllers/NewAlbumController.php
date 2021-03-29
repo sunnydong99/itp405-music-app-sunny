@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Album;
 use App\Models\Artist;
+use Illuminate\Support\Facades\Auth;
+
 
 class NewAlbumController extends Controller
 {
     public function index()
     { 
-        $albums = Album::with(['artist'])
+        $albums = Album::with(['artist','user'])
             ->join('artists', 'artists.id', '=', 'albums.artist_id')
             ->select('*','albums.id as album_id')
             ->orderBy('artists.name')
@@ -40,6 +42,7 @@ class NewAlbumController extends Controller
         $album = new Album();
         $album->title = $request->input('title');
         $album->artist_id = $request->input('artist');
+        $album->user_id = Auth::user()->id;
         $album->save(); // this does the insert
 
         return redirect()
@@ -51,6 +54,8 @@ class NewAlbumController extends Controller
     {
         $artists = Artist::orderBy('name')->get();
         $album = Album::find($id);
+
+        $this->authorize('update', $album);
 
         return view('new-album.edit', [
             'artists' => $artists,
@@ -69,7 +74,9 @@ class NewAlbumController extends Controller
         $album->title = $request->input('title');
         $album->artist_id = $request->input('artist');
         $album->save();
-
+        
+        $this->authorize('update', $album);
+        
         return redirect()
             ->route('new-album.edit', [ 'id' => $id ])
             ->with('success', "Successfully updated {$album->artist->name} - {$album->title}");
