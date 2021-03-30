@@ -19,6 +19,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
 // Assignment 6
 use App\Http\Controllers\AdminController;
+// Lecture 11
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewAlbum;
+use App\Jobs\AnnounceNewAlbum;
 
 
 /*
@@ -31,6 +35,33 @@ use App\Http\Controllers\AdminController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+// Lecture 11 Email
+Route::get('/mail', function () {
+    // Mailtrap and mailhop
+    // Mail::raw('Some text', function ($message ) {
+    //     $message->to('xiaoyudo@usc.edu')->subject('Hello');
+    // });
+
+    // Using a mailable class (dedicated to creating emails)
+
+    // Using Queues (2 ways, queue method or dispatch)
+    // dispatch(function () {
+    //     $masterOfPuppets = Album::find(1);
+    //     Mail::to('xiaoyudo@usc.edu')->send(new NewAlbum($masterOfPuppets));
+    // });
+    // $jaggedLittlePill = Album::find(6);
+    // Mail::to('xiaoyudo@usc.edu')->queue(new NewAlbum($jaggedLittlePill));
+
+    $jaggedLittlePill = Album::find(6);
+    AnnounceNewAlbum::dispatch($jaggedLittlePill); // this and the next line are the same
+    // dispatch(new AnnounceNewAlbum($jaggedLittlePill));
+
+    // Views allow for nice workflow when designing emails: treat it as a regular view
+    // return view('email.new-album', [
+    //     'album' => Album::first(),
+    // ]);
+});
 
 Route::get('/eloquent', function() {
     // QUERYING
