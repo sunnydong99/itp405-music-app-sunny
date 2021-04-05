@@ -23,6 +23,11 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NewAlbum;
 use App\Jobs\AnnounceNewAlbum;
+// Assignment 8
+use App\Jobs\SendMusicAppStats;
+use App\Models\Playlist;
+use App\Mail\MusicAppStats;
+
 
 
 /*
@@ -206,6 +211,23 @@ Route::middleware(['custom-auth'])->group(function () {
     Route::middleware(['admin-priv'])->group(function() {
         Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
         Route::post('/admin', [AdminController::class, 'update'])->name('admin.update');
+        Route::post('/stats', function () {
+            $numArtists = Artist::count();
+            $numPlaylists = Playlist::count();
+            $tracksDuration = Track::sum('milliseconds');
+            $tracksDuration = ceil($tracksDuration/60000);
+            SendMusicAppStats::dispatch($numArtists, $numPlaylists, $tracksDuration);
+            return redirect()
+                    ->route('admin.index')
+                    ->with('success', "App stats emails sent successfully");
+
+            
+            // return view('email.stats', [
+            //     'numArtists' => $numArtists,
+            //     'numPlaylists' => $numPlaylists,
+            //     'tracksDuration' => $tracksDuration,
+            // ]);
+        })->name('admin.stats');
     });
 });
 // middleware = classes with a handle method that run before a set of routes

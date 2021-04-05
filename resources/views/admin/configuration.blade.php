@@ -3,6 +3,14 @@
 @section('title', 'System Configurations')
 
 @section('content')
+    <hr>
+    <form method="post" action="{{ route('admin.stats') }}">
+        @csrf
+        <div class="my-3">
+        <input type="submit" value="Email Stats to Users" class="btn btn-primary">
+        </div>
+    </form>
+    <hr>
     <form method="post" action="{{ route('admin.update') }}">
         @csrf
         <div class="my-3">
