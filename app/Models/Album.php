@@ -9,6 +9,9 @@ class Album extends Model
 {
     use HasFactory;
 
+    // Lecture 12
+    protected $fillable = ['title', 'artist_id']; // defines what we can mass assign
+
     // sets up the albums belongs to artist relationship
     public function artist() 
     {   

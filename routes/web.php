@@ -27,6 +27,8 @@ use App\Jobs\AnnounceNewAlbum;
 use App\Jobs\SendMusicAppStats;
 use App\Models\Playlist;
 use App\Mail\MusicAppStats;
+// Lecture 12
+use App\Http\Controllers\Api\AlbumController as ApiAlbumCOntroller;
 
 
 
@@ -40,6 +42,8 @@ use App\Mail\MusicAppStats;
 | contains the "web" middleware group. Now create something great!
 |
 */
+// Route::get('/api/albums', [ApiAlbumCOntroller::class, 'index'])->name('albums.index');
+// Route::resource('albums', ApiAlbumController::class); // Creates routes for a lit of verbs with urls that map to actions (also assigns route names)
 
 // Lecture 11 Email
 Route::get('/mail', function () {
